@@ -13,11 +13,37 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(port, hostname, () => {
+    
     console.log(`Server running at http://${hostname}:${port}/`);
-    request('http://dummy.restapiexample.com/api/v1/employees', { json: true }, (err, res, body) => {
-        if (err) {
-            return console.log(err);
+    url1 = 'http://dummy.restapiexample.com/api/v1/employees'
+    request(url1, { json: true }, (err1, res1, body1) => {
+        if (err1) {
+            return console.log(err1);
         }
-        console.log(res);
+        if (body1.status == "success") {
+            
+            console.log("API 1st Hit")
+            if (body1.data.length > 0) {
+                url2 = 'http://dummy.restapiexample.com/api/v1/employee/' + body1.data[body1.data.length - 1].id //body1.data[0].id
+                request(url2, { json: true }, (err2, res2, body2) => {
+                    if (err2) {
+                        return console.log(err2);
+                    }
+                    if (body2.status == "success") {
+                        
+                        console.log("API 2nd Hit")
+                        console.log(body2.data)
+                    }
+                    else {
+                        
+                        console.log(body2.message)
+                    }
+                });
+            }
+        }
+        else {
+            
+            console.log(body2.message)
+        }
     });
 });
